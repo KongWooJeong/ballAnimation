@@ -46,9 +46,9 @@ class Circle extends GameObject {
     this.context.closePath();
   }
 
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
+  update(secondsPassed: number) {
+    this.x += this.vx * secondsPassed;
+    this.y += this.vy * secondsPassed;
   }
 
   clear() {
