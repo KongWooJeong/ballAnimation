@@ -45,6 +45,15 @@ class Circle extends GameObject {
     this.context.fill();
     this.context.closePath();
   }
+
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+  }
+
+  clear() {
+    this.context.clearRect(0, 0, 1000, 500);
+  }
 }
 
 export { Circle };
