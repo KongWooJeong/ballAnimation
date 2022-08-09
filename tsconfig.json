@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"target": "es6",
+		"module": "CommonJS",
+		"lib": ["es2015", "dom"],
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"allowJs": true,
+		"checkJs": true,
+		"strict": true,
+		"strictFunctionTypes": true,
+		"strictPropertyInitialization": true,
+		"noImplicitThis": true,
+		"alwaysStrict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+	},
+	"include": [
+		"src/**/*",
+		"utils/**/*"
+	],
+	"exclude": ["node_modules"]
+}
