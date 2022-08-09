@@ -41,7 +41,7 @@ class Circle extends GameObject {
   draw() {
     this.context.beginPath();
     this.context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    this.context.fillStyle = "black";
+    this.context.fillStyle = this.isColliding ? "#ff8080" : "#0099b0";
     this.context.fill();
     this.context.closePath();
   }
@@ -56,4 +56,12 @@ class Circle extends GameObject {
   }
 }
 
-export { Circle };
+function circleIntersect(x1: number, y1: number, x2: number, y2: number) {
+  const squareDistance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+
+  console.log(squareDistance);
+
+  return squareDistance;
+}
+
+export { Circle, circleIntersect };
