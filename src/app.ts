@@ -3,14 +3,14 @@ import { Circle, circleIntersect } from "./game";
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-const ball1 = new Circle(ctx, 40, 60, 100, 100, 11);
-const ball2 = new Circle(ctx, 100, 200, 100, 100, 4);
-const ball3 = new Circle(ctx, 200, 110, -100, 100, 2);
-const ball4 = new Circle(ctx, 900, 300, 100, 100, 1);
-const ball5 = new Circle(ctx, 350, 350, -100, 100, 16);
-const ball6 = new Circle(ctx, 800, 90, 100, 100, 5);
-const ball7 = new Circle(ctx, 390, 180, 100, 100, 12);
-const ball8 = new Circle(ctx, 400, 80, -100, 100, 20);
+const ball1 = new Circle(ctx, 40, 60, 200, 200, 20);
+const ball2 = new Circle(ctx, 100, 200, 200, 200, 20);
+const ball3 = new Circle(ctx, 200, 110, 200, 200, 20);
+const ball4 = new Circle(ctx, 900, 300, 200, 200, 20);
+const ball5 = new Circle(ctx, 350, 350, 200, 200, 20);
+const ball6 = new Circle(ctx, 800, 90, 200, 200, 20);
+const ball7 = new Circle(ctx, 390, 180, 200, 200, 20);
+const ball8 = new Circle(ctx, 400, 80, 200, 200, 20);
 
 const balls = [ball1, ball2, ball3, ball4, ball5, ball6, ball7, ball8];
 
@@ -30,9 +30,6 @@ function wallCollision(ball: Circle, secondsPassed: number) {
   ) {
     ball.vy = -ball.vy;
   }
-
-  ball.x += ball.vx * secondsPassed;
-  ball.y += ball.vy * secondsPassed;
 }
 
 function detectCollisions(gameObjects: Circle[]) {
@@ -40,22 +37,28 @@ function detectCollisions(gameObjects: Circle[]) {
   let obj2;
 
   for (let i = 0; i < gameObjects.length; i++) {
-    gameObjects[i].isColliding = false;
-  }
-
-  for (let i = 0; i < gameObjects.length; i++) {
     obj1 = gameObjects[i];
+
     for (let j = i + 1; j < gameObjects.length; j++) {
       obj2 = gameObjects[j];
-
-      console.log("radius", obj1.radius + obj2.radius);
-
       if (
         circleIntersect(obj1.x, obj1.y, obj2.x, obj2.y) <=
         (obj1.radius + obj2.radius) * (obj1.radius + obj2.radius)
       ) {
-        obj1.isColliding = true;
-        obj2.isColliding = true;
+        const vCollision = { x: obj2.x - obj1.x, y: obj2.y - obj1.y };
+        const distance = Math.sqrt(
+          (obj2.x - obj1.x) * (obj2.x - obj1.x) +
+            (obj2.y - obj1.y) * (obj2.y - obj1.y)
+        );
+        const vCollisionNorm = {
+          x: vCollision.x / distance,
+          y: vCollision.y / distance,
+        };
+
+        obj1.vx = 200 * -vCollisionNorm.x;
+        obj1.vy = 200 * -vCollisionNorm.y;
+        obj2.vx = 200 * vCollisionNorm.x;
+        obj2.vy = 200 * vCollisionNorm.y;
       }
     }
   }
