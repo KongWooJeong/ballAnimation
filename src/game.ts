@@ -58,25 +58,52 @@ class Circle extends GameObject {
 }
 
 class GameWorld {
-  canvas: HTMLCanvasElement | null;
-  context: CanvasRenderingContext2D | null;
+  context: CanvasRenderingContext2D;
   secondsPassed: number;
   oldTimeStamp: number;
-  gameEntities: [];
+  gameEntities: GameObject[];
 
-  constructor(canvasId: string) {
-    this.canvas = null;
-    this.context = null;
+  constructor(context: CanvasRenderingContext2D) {
+    this.context = context;
     this.secondsPassed = 0;
     this.oldTimeStamp = 0;
     this.gameEntities = [];
 
-    this.init(canvasId);
+    this.init();
   }
 
-  init(canvasId: string) {
-    this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-    this.context = this.canvas.getContext("2d");
+  init() {
+    this.createWorld();
+
+    window.requestAnimationFrame((timeStamp) => {
+      this.gameLoop(timeStamp);
+    });
+  }
+
+  createWorld() {
+    const angle = 113;
+    const speed = 200;
+
+    const x = Math.cos(angle) * speed;
+    const y = Math.sin(angle) * speed;
+
+    this.gameEntities = [
+      new Circle(this.context, 40, 60, x, y, 20, 113),
+      new Circle(this.context, 100, 200, x, y, 20, 113),
+      new Circle(this.context, 200, 110, x, y, 20, 113),
+      new Circle(this.context, 900, 300, x, y, 20, 113),
+      new Circle(this.context, 350, 350, x, y, 20, 113),
+      new Circle(this.context, 800, 90, x, y, 20, 113),
+      new Circle(this.context, 390, 180, x, y, 20, 113),
+      new Circle(this.context, 400, 80, x, y, 20, 113),
+    ];
+  }
+
+  gameLoop(timeStamp: number) {
+    this.secondsPassed = (timeStamp - this.oldTimeStamp) / 1000;
+    this.oldTimeStamp = timeStamp;
+
+    window.requestAnimationFrame((timeStamp) => this.gameLoop(timeStamp));
   }
 }
 
