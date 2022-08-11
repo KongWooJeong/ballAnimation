@@ -1,56 +1,4 @@
-class GameEntity {
-  context: CanvasRenderingContext2D;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-
-  constructor(
-    context: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    vx: number,
-    vy: number
-  ) {
-    this.context = context;
-    this.x = x;
-    this.y = y;
-    this.vx = vx;
-    this.vy = vy;
-  }
-}
-
-class Circle extends GameEntity {
-  radius: number;
-  speed: number;
-
-  constructor(
-    context: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    vx: number,
-    vy: number,
-    radius: number,
-    speed: number
-  ) {
-    super(context, x, y, vx, vy);
-    this.radius = radius;
-    this.speed = speed;
-  }
-
-  draw() {
-    this.context.beginPath();
-    this.context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    this.context.fillStyle = "#0099b0";
-    this.context.fill();
-    this.context.closePath();
-  }
-
-  update(secondsPassed: number) {
-    this.x += this.vx * secondsPassed;
-    this.y += this.vy * secondsPassed;
-  }
-}
+import { Circle } from "./gameEntity";
 
 class GameWorld {
   context: CanvasRenderingContext2D;
@@ -123,7 +71,9 @@ class GameWorld {
       for (let j = i + 1; j < this.gameEntities.length; j++) {
         targetCircle = this.gameEntities[j];
 
-        if (this.circleIntersect(baseCircle, targetCircle)) {
+        const isCollision = this.circleIntersect(baseCircle, targetCircle);
+
+        if (isCollision) {
           this.resolveCicleCollision(baseCircle, targetCircle);
         }
       }
@@ -134,12 +84,12 @@ class GameWorld {
     const collisionDistance =
       (baseCircle.x - targetCircle.x) * (baseCircle.x - targetCircle.x) +
       (baseCircle.y - targetCircle.y) * (baseCircle.y - targetCircle.y);
-    const isCollision =
+
+    return (
       collisionDistance <=
       (baseCircle.radius + targetCircle.radius) *
-        (baseCircle.radius + targetCircle.radius);
-
-    return isCollision;
+        (baseCircle.radius + targetCircle.radius)
+    );
   }
 
   resolveCicleCollision(baseCircle: Circle, targetCircle: Circle) {
@@ -169,4 +119,4 @@ class GameWorld {
   }
 }
 
-export { Circle, GameWorld, GameEntity };
+export default GameWorld;

@@ -1,4 +1,6 @@
-import { GameWorld, Circle } from "./game";
+import GameWorld from "./game/gameWorld";
+import { Circle } from "./game/gameEntity";
+
 import { getRandomIntInclusive } from "../utils/randomNumber";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -18,9 +20,7 @@ for (let i = 1; i <= entityCount; i++) {
   const vx = Math.cos(angle) * speed;
   const vy = Math.sin(angle) * speed;
 
-  circleEntities.push(
-    new Circle(ctx, xPoint, yPoint, vx, vy, radius, 113, speed)
-  );
+  circleEntities.push(new Circle(ctx, xPoint, yPoint, vx, vy, radius, speed));
 }
 
 gameWorld.createWorld(circleEntities);
