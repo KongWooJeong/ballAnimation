@@ -36,6 +36,7 @@ function createRandomCircles(
     const speed: number = getRandomIntInclusive(minSpeed, maxSpeed);
     const directionX: number = Math.cos(angle) * speed;
     const directionY: number = Math.sin(angle) * speed;
+    const fillStyle = "#0099b0";
 
     const circle = new Circle(
       context,
@@ -44,7 +45,8 @@ function createRandomCircles(
       directionX,
       directionY,
       radius,
-      speed
+      speed,
+      fillStyle
     );
 
     circles.push(circle);
