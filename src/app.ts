@@ -3,13 +3,13 @@ import { Circle } from "./game/gameEntity";
 
 import { getRandomIntInclusive } from "../utils/randomNumber";
 
-const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+const $canvas = document.getElementById("canvas") as HTMLCanvasElement;
+const context = $canvas.getContext("2d") as CanvasRenderingContext2D;
 
-const circleEntities: Circle[] = [];
-const gameWorld = new GameWorld(canvas, ctx);
-
+const balls: Circle[] = [];
 const entityCount = getRandomIntInclusive(10, 20);
+
+const gameWorld = new GameWorld($canvas, context);
 
 for (let i = 1; i <= entityCount; i++) {
   const radius = getRandomIntInclusive(10, 20);
@@ -20,8 +20,7 @@ for (let i = 1; i <= entityCount; i++) {
   const vx = Math.cos(angle) * speed;
   const vy = Math.sin(angle) * speed;
 
-  circleEntities.push(new Circle(ctx, xPoint, yPoint, vx, vy, radius, speed));
+  balls.push(new Circle(context, xPoint, yPoint, vx, vy, radius, speed));
 }
 
-gameWorld.createWorld(circleEntities);
-gameWorld.init();
+gameWorld.init(balls);

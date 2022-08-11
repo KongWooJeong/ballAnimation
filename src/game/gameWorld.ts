@@ -1,4 +1,4 @@
-import { Circle } from "./gameEntity";
+import { Circle, GameEntity } from "./gameEntity";
 
 interface VectorInfo {
   x: number;
@@ -10,7 +10,7 @@ class GameWorld {
   context: CanvasRenderingContext2D;
   secondsPassed: number;
   oldTimeStamp: number;
-  gameEntities: Circle[];
+  gameEntities: GameEntity[];
 
   constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     this.canvas = canvas;
@@ -20,14 +20,12 @@ class GameWorld {
     this.gameEntities = [];
   }
 
-  init() {
+  init(entities: GameEntity[]) {
+    this.gameEntities = [...entities];
+
     window.requestAnimationFrame((timeStamp) => {
       this.gameLoop(timeStamp);
     });
-  }
-
-  createWorld(entities: Circle[]) {
-    this.gameEntities = [...entities];
   }
 
   gameLoop(timeStamp: number) {
@@ -52,39 +50,43 @@ class GameWorld {
 
   detectWallCollision() {
     this.gameEntities.forEach((entity) => {
-      if (
-        entity.x + entity.vx * this.secondsPassed > 1000 - entity.radius ||
-        entity.x + entity.vx * this.secondsPassed < entity.radius
-      ) {
-        entity.vx = -entity.vx;
-      }
+      if (entity instanceof Circle) {
+        const isUpDownWallCollision: boolean =
+          entity.x + entity.vx * this.secondsPassed >
+            this.canvas.width - entity.radius ||
+          entity.x + entity.vx * this.secondsPassed < entity.radius;
+        const isLeftRightWallCollition: boolean =
+          entity.y + entity.vy * this.secondsPassed >
+            this.canvas.height - entity.radius ||
+          entity.y + entity.vy * this.secondsPassed < entity.radius;
 
-      if (
-        entity.y + entity.vy * this.secondsPassed > 500 - entity.radius ||
-        entity.y + entity.vy * this.secondsPassed < entity.radius
-      ) {
-        entity.vy = -entity.vy;
+        this.resolveCircleAndWallCollision(
+          entity,
+          isUpDownWallCollision,
+          isLeftRightWallCollition
+        );
       }
     });
   }
 
   detectEntityCollision() {
-    let baseEntity: Circle;
-    let targetEntity: Circle;
-
     for (let i = 0; i < this.gameEntities.length; i++) {
-      baseEntity = this.gameEntities[i];
-
       for (let j = i + 1; j < this.gameEntities.length; j++) {
-        targetEntity = this.gameEntities[j];
+        if (
+          this.gameEntities[i] instanceof Circle &&
+          this.gameEntities[j] instanceof Circle
+        ) {
+          const baseEntity = this.gameEntities[i] as Circle;
+          const targetEntity = this.gameEntities[j] as Circle;
 
-        const isCollision: boolean = this.checkCircleIntersect(
-          baseEntity,
-          targetEntity
-        );
+          const isCollision: boolean = this.checkCircleIntersect(
+            baseEntity,
+            targetEntity
+          );
 
-        if (isCollision) {
-          this.resolveCicleCollision(baseEntity, targetEntity);
+          if (isCollision) {
+            this.resolveCicleAndCircleCollision(baseEntity, targetEntity);
+          }
         }
       }
     }
@@ -99,7 +101,21 @@ class GameWorld {
     return collisionDistance <= baseCircle.radius + targetCircle.radius;
   }
 
-  resolveCicleCollision(baseCircle: Circle, targetCircle: Circle) {
+  resolveCircleAndWallCollision(
+    baseCircle: Circle,
+    isUpDownWallCollision: boolean,
+    isLeftRightWallCollition: boolean
+  ) {
+    if (isUpDownWallCollision) {
+      baseCircle.vx = -baseCircle.vx;
+    }
+
+    if (isLeftRightWallCollition) {
+      baseCircle.vy = -baseCircle.vy;
+    }
+  }
+
+  resolveCicleAndCircleCollision(baseCircle: Circle, targetCircle: Circle) {
     const collisionVectorInfo: VectorInfo = {
       x: targetCircle.x - baseCircle.x,
       y: targetCircle.y - baseCircle.y,
