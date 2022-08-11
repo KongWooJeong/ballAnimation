@@ -9,14 +9,14 @@ interface VectorInfo {
 class GameWorld {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
-  secondsPassed: number;
+  deltaSecond: number;
   oldTimeStamp: number;
   gameEntities: GameEntity[];
 
   constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     this.canvas = canvas;
     this.context = context;
-    this.secondsPassed = 0;
+    this.deltaSecond = 0;
     this.oldTimeStamp = 0;
     this.gameEntities = [];
   }
@@ -34,14 +34,14 @@ class GameWorld {
   }
 
   gameLoop(timeStamp: number): void {
-    this.secondsPassed = (timeStamp - this.oldTimeStamp) / 1000;
+    this.deltaSecond = (timeStamp - this.oldTimeStamp) / 1000;
     this.oldTimeStamp = timeStamp;
 
     this.detectWallCollision();
     this.detectEntityCollision();
 
     this.gameEntities.forEach((entity) => {
-      entity.update(this.secondsPassed);
+      entity.update(this.deltaSecond);
     });
 
     this.clearCanvas();
@@ -57,13 +57,13 @@ class GameWorld {
     this.gameEntities.forEach((entity) => {
       if (entity instanceof Circle) {
         const isLeftRightWallCollition: boolean =
-          entity.x + entity.dx * this.secondsPassed >
+          entity.x + entity.dx * this.deltaSecond >
             this.canvas.width - entity.radius ||
-          entity.x + entity.dx * this.secondsPassed < entity.radius;
+          entity.x + entity.dx * this.deltaSecond < entity.radius;
         const isUpDownWallCollision: boolean =
-          entity.y + entity.dy * this.secondsPassed >
+          entity.y + entity.dy * this.deltaSecond >
             this.canvas.height - entity.radius ||
-          entity.y + entity.dy * this.secondsPassed < entity.radius;
+          entity.y + entity.dy * this.deltaSecond < entity.radius;
 
         if (isUpDownWallCollision || isLeftRightWallCollition) {
           this.resolveWallCollision(

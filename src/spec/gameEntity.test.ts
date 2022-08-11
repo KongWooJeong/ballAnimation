@@ -63,11 +63,11 @@ describe("Circle Entity", () => {
   });
 
   test("Check Circle Entity update method", () => {
-    const deltaTime = 0.1;
+    const deltaSecond = 1;
 
-    circle.update(deltaTime);
+    circle.update(deltaSecond);
 
-    expect(circle.x).toBe(circleInfo.x + circleInfo.dx * deltaTime);
-    expect(circle.y).toBe(circleInfo.y + circleInfo.dy * deltaTime);
+    expect(circle.x).toBe(circleInfo.x + circleInfo.dx * deltaSecond);
+    expect(circle.y).toBe(circleInfo.y + circleInfo.dy * deltaSecond);
   });
 });

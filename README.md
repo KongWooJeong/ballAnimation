@@ -66,11 +66,11 @@
 ```
 // 마지막 프레임이 이후 경과된 시간(초)
 // (currentTimeStamp - oldTimeStamp)는 밀리 초 이므로 1000으로 나누어 초로 변환한다.
-const secondsPassed = (currentTimeStamp - oldTimeStamp) / 1000;
+const deltaSecond = (currentTimeStamp - oldTimeStamp) / 1000;
 
 // px/s 1초에 이동하게 px
-공A.x += 공A.dx * secondsPassed;
-공A.y += 공A.dy * secondsPassed;
+공A.x += 공A.dx * deltaSecond;
+공A.y += 공A.dy * deltaSecond;
 ```
 
 <br />

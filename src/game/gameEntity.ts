@@ -26,7 +26,7 @@ abstract class GameEntity {
   }
 
   abstract draw(): void;
-  abstract update(secondsPassed: number): void;
+  abstract update(deltaSecond: number): void;
 }
 
 class Circle extends GameEntity {
@@ -54,9 +54,9 @@ class Circle extends GameEntity {
     this.context.closePath();
   }
 
-  update(secondsPassed: number) {
-    this.x += this.dx * secondsPassed;
-    this.y += this.dy * secondsPassed;
+  update(deltaSecond: number) {
+    this.x += this.dx * deltaSecond;
+    this.y += this.dy * deltaSecond;
   }
 }
 

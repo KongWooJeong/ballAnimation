@@ -77,7 +77,7 @@ describe("GameWorld test", () => {
   test("check GameWorld constructor", () => {
     expect(gameWorld.canvas).toBe(canvas);
     expect(gameWorld.context).toBe(context);
-    expect(gameWorld.secondsPassed).toBe(0);
+    expect(gameWorld.deltaSecond).toBe(0);
     expect(gameWorld.oldTimeStamp).toBe(0);
     expect(gameWorld.gameEntities.length).toBe(0);
   });
@@ -115,7 +115,7 @@ describe("GameWorld test", () => {
 
     const mockresolveWallCollision = jest.fn();
     gameWorld.resolveWallCollision = mockresolveWallCollision;
-    gameWorld.secondsPassed = 1;
+    gameWorld.deltaSecond = 1;
 
     gameWorld.init([baseCircle]);
     gameWorld.detectWallCollision();
@@ -130,7 +130,7 @@ describe("GameWorld test", () => {
     gameWorld.resolveCicleAndCircleCollision =
       mockResolveCicleAndCircleCollision;
     gameWorld.checkCircleIntersect = mockCheckCircleIntersect;
-    gameWorld.secondsPassed = 1;
+    gameWorld.deltaSecond = 1;
 
     gameWorld.init([baseCircle, targetCircle]);
     gameWorld.detectEntityCollision();
