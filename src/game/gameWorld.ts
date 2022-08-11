@@ -1,12 +1,19 @@
 import { Circle } from "./gameEntity";
 
+interface VectorInfo {
+  x: number;
+  y: number;
+}
+
 class GameWorld {
+  canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   secondsPassed: number;
   oldTimeStamp: number;
   gameEntities: Circle[];
 
-  constructor(context: CanvasRenderingContext2D) {
+  constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
+    this.canvas = canvas;
     this.context = context;
     this.secondsPassed = 0;
     this.oldTimeStamp = 0;
@@ -28,7 +35,7 @@ class GameWorld {
     this.oldTimeStamp = timeStamp;
 
     this.detectWallCollision();
-    this.detectEntityCollisions();
+    this.detectEntityCollision();
 
     for (let i = 0; i < this.gameEntities.length; i++) {
       this.gameEntities[i].update(this.secondsPassed);
@@ -61,51 +68,49 @@ class GameWorld {
     });
   }
 
-  detectEntityCollisions() {
-    let baseCircle;
-    let targetCircle;
+  detectEntityCollision() {
+    let baseEntity: Circle;
+    let targetEntity: Circle;
 
     for (let i = 0; i < this.gameEntities.length; i++) {
-      baseCircle = this.gameEntities[i];
+      baseEntity = this.gameEntities[i];
 
       for (let j = i + 1; j < this.gameEntities.length; j++) {
-        targetCircle = this.gameEntities[j];
+        targetEntity = this.gameEntities[j];
 
-        const isCollision = this.circleIntersect(baseCircle, targetCircle);
+        const isCollision: boolean = this.checkCircleIntersect(
+          baseEntity,
+          targetEntity
+        );
 
         if (isCollision) {
-          this.resolveCicleCollision(baseCircle, targetCircle);
+          this.resolveCicleCollision(baseEntity, targetEntity);
         }
       }
     }
   }
 
-  circleIntersect(baseCircle: Circle, targetCircle: Circle) {
-    const collisionDistance =
+  checkCircleIntersect(baseCircle: Circle, targetCircle: Circle) {
+    const collisionDistance: number = Math.sqrt(
       (baseCircle.x - targetCircle.x) * (baseCircle.x - targetCircle.x) +
-      (baseCircle.y - targetCircle.y) * (baseCircle.y - targetCircle.y);
-
-    return (
-      collisionDistance <=
-      (baseCircle.radius + targetCircle.radius) *
-        (baseCircle.radius + targetCircle.radius)
+        (baseCircle.y - targetCircle.y) * (baseCircle.y - targetCircle.y)
     );
+
+    return collisionDistance <= baseCircle.radius + targetCircle.radius;
   }
 
   resolveCicleCollision(baseCircle: Circle, targetCircle: Circle) {
-    const collisionVectorInfo = {
+    const collisionVectorInfo: VectorInfo = {
       x: targetCircle.x - baseCircle.x,
       y: targetCircle.y - baseCircle.y,
     };
-
-    const collsitionVectorDistance = Math.sqrt(
+    const collsisionVectorDistance: number = Math.sqrt(
       (targetCircle.x - baseCircle.x) * (targetCircle.x - baseCircle.x) +
         (targetCircle.y - baseCircle.y) * (targetCircle.y - baseCircle.y)
     );
-
-    const collisionUnitVectorInfo = {
-      x: collisionVectorInfo.x / collsitionVectorDistance,
-      y: collisionVectorInfo.y / collsitionVectorDistance,
+    const collisionUnitVectorInfo: VectorInfo = {
+      x: collisionVectorInfo.x / collsisionVectorDistance,
+      y: collisionVectorInfo.y / collsisionVectorDistance,
     };
 
     baseCircle.vx = baseCircle.speed * -collisionUnitVectorInfo.x;
@@ -115,7 +120,7 @@ class GameWorld {
   }
 
   clearCanvas() {
-    this.context.clearRect(0, 0, 1000, 500);
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }
 
