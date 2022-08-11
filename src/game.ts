@@ -114,41 +114,17 @@ class GameWorld {
   }
 
   detectEntityCollisions() {
-    let collidedBaseEntity;
-    let collidedTargetEntity;
+    let baseCircle;
+    let targetCircle;
 
     for (let i = 0; i < this.gameEntities.length; i++) {
-      collidedBaseEntity = this.gameEntities[i];
+      baseCircle = this.gameEntities[i];
 
       for (let j = i + 1; j < this.gameEntities.length; j++) {
-        collidedTargetEntity = this.gameEntities[j];
+        targetCircle = this.gameEntities[j];
 
-        if (this.circleIntersect(collidedBaseEntity, collidedTargetEntity)) {
-          const collisionVectorInfo = {
-            x: collidedTargetEntity.x - collidedBaseEntity.x,
-            y: collidedTargetEntity.y - collidedBaseEntity.y,
-          };
-
-          const collsitionVectorDistance = Math.sqrt(
-            (collidedTargetEntity.x - collidedBaseEntity.x) *
-              (collidedTargetEntity.x - collidedBaseEntity.x) +
-              (collidedTargetEntity.y - collidedBaseEntity.y) *
-                (collidedTargetEntity.y - collidedBaseEntity.y)
-          );
-
-          const collisionUnitVectorInfo = {
-            x: collisionVectorInfo.x / collsitionVectorDistance,
-            y: collisionVectorInfo.y / collsitionVectorDistance,
-          };
-
-          collidedBaseEntity.vx =
-            collidedBaseEntity.speed * -collisionUnitVectorInfo.x;
-          collidedBaseEntity.vy =
-            collidedBaseEntity.speed * -collisionUnitVectorInfo.y;
-          collidedTargetEntity.vx =
-            collidedTargetEntity.speed * collisionUnitVectorInfo.x;
-          collidedTargetEntity.vy =
-            collidedTargetEntity.speed * collisionUnitVectorInfo.y;
+        if (this.circleIntersect(baseCircle, targetCircle)) {
+          this.resolveCicleCollision(baseCircle, targetCircle);
         }
       }
     }
@@ -164,6 +140,28 @@ class GameWorld {
         (baseCircle.radius + targetCircle.radius);
 
     return isCollision;
+  }
+
+  resolveCicleCollision(baseCircle: Circle, targetCircle: Circle) {
+    const collisionVectorInfo = {
+      x: targetCircle.x - baseCircle.x,
+      y: targetCircle.y - baseCircle.y,
+    };
+
+    const collsitionVectorDistance = Math.sqrt(
+      (targetCircle.x - baseCircle.x) * (targetCircle.x - baseCircle.x) +
+        (targetCircle.y - baseCircle.y) * (targetCircle.y - baseCircle.y)
+    );
+
+    const collisionUnitVectorInfo = {
+      x: collisionVectorInfo.x / collsitionVectorDistance,
+      y: collisionVectorInfo.y / collsitionVectorDistance,
+    };
+
+    baseCircle.vx = baseCircle.speed * -collisionUnitVectorInfo.x;
+    baseCircle.vy = baseCircle.speed * -collisionUnitVectorInfo.y;
+    targetCircle.vx = targetCircle.speed * collisionUnitVectorInfo.x;
+    targetCircle.vy = targetCircle.speed * collisionUnitVectorInfo.y;
   }
 
   clearCanvas() {
