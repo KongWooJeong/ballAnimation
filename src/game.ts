@@ -1,6 +1,5 @@
 class GameEntity {
   context: CanvasRenderingContext2D;
-  angle: number;
   x: number;
   y: number;
   vx: number;
@@ -11,15 +10,13 @@ class GameEntity {
     x: number,
     y: number,
     vx: number,
-    vy: number,
-    angle: number
+    vy: number
   ) {
     this.context = context;
     this.x = x;
     this.y = y;
     this.vx = vx;
     this.vy = vy;
-    this.angle = angle;
   }
 }
 
@@ -34,11 +31,11 @@ class Circle extends GameEntity {
     vx: number,
     vy: number,
     radius: number,
-    angle: number
+    speed: number
   ) {
-    super(context, x, y, vx, vy, angle);
+    super(context, x, y, vx, vy);
     this.radius = radius;
-    this.speed = 200;
+    this.speed = speed;
   }
 
   draw() {
@@ -53,74 +50,42 @@ class Circle extends GameEntity {
     this.x += this.vx * secondsPassed;
     this.y += this.vy * secondsPassed;
   }
-
-  clear() {
-    this.context.clearRect(0, 0, 1000, 500);
-  }
 }
 
 class GameWorld {
   context: CanvasRenderingContext2D;
   secondsPassed: number;
   oldTimeStamp: number;
-  gameEntities: Array<Circle>;
+  gameEntities: Circle[];
 
   constructor(context: CanvasRenderingContext2D) {
     this.context = context;
     this.secondsPassed = 0;
     this.oldTimeStamp = 0;
     this.gameEntities = [];
-
-    this.init();
   }
 
   init() {
-    this.createWorld();
-
     window.requestAnimationFrame((timeStamp) => {
       this.gameLoop(timeStamp);
     });
   }
 
-  createWorld() {
-    const angle = 113;
-    const speed = 200;
-
-    const x = Math.cos(angle) * speed;
-    const y = Math.sin(angle) * speed;
-
-    this.gameEntities = [
-      new Circle(this.context, 40, 60, x, y, 11, 113),
-      new Circle(this.context, 100, 200, x, y, 12, 113),
-      new Circle(this.context, 200, 110, x, y, 13, 113),
-      new Circle(this.context, 900, 300, x, y, 14, 113),
-      new Circle(this.context, 350, 350, x, y, 15, 113),
-      new Circle(this.context, 800, 90, x, y, 16, 113),
-      new Circle(this.context, 390, 180, x, y, 17, 113),
-      new Circle(this.context, 400, 80, x, y, 18, 113),
-      new Circle(this.context, 20, 21, x, y, 19, 113),
-      new Circle(this.context, 40, 21, x, y, 20, 113),
-      new Circle(this.context, 100, 21, x, y, 19, 113),
-      new Circle(this.context, 200, 40, x, y, 18, 113),
-      new Circle(this.context, 400, 100, x, y, 17, 113),
-      new Circle(this.context, 800, 200, x, y, 15, 113),
-      new Circle(this.context, 123, 210, x, y, 14, 113),
-      new Circle(this.context, 777, 111, x, y, 13, 113),
-      new Circle(this.context, 241, 233, x, y, 12, 113),
-      new Circle(this.context, 190, 43, x, y, 11, 113),
-    ];
+  createWorld(entities: Circle[]) {
+    this.gameEntities = entities;
   }
 
   gameLoop(timeStamp: number) {
     this.secondsPassed = (timeStamp - this.oldTimeStamp) / 1000;
     this.oldTimeStamp = timeStamp;
 
+    this.wallCollision();
+    this.detectCollisions();
+
     for (let i = 0; i < this.gameEntities.length; i++) {
       this.gameEntities[i].update(this.secondsPassed);
-      this.wallCollision(this.gameEntities[i], this.secondsPassed);
     }
 
-    this.detectCollisions();
     this.clearCanvas();
 
     for (let i = 0; i < this.gameEntities.length; i++) {
@@ -130,20 +95,22 @@ class GameWorld {
     window.requestAnimationFrame((timeStamp) => this.gameLoop(timeStamp));
   }
 
-  wallCollision(entity: Circle, secondsPassed: number) {
-    if (
-      entity.x + entity.vx * secondsPassed > 1000 - entity.radius ||
-      entity.x + entity.vx * secondsPassed < entity.radius
-    ) {
-      entity.vx = -entity.vx;
-    }
+  wallCollision() {
+    this.gameEntities.forEach((entity) => {
+      if (
+        entity.x + entity.vx * this.secondsPassed > 1000 - entity.radius ||
+        entity.x + entity.vx * this.secondsPassed < entity.radius
+      ) {
+        entity.vx = -entity.vx;
+      }
 
-    if (
-      entity.y + entity.vy * secondsPassed > 500 - entity.radius ||
-      entity.y + entity.vy * secondsPassed < entity.radius
-    ) {
-      entity.vy = -entity.vy;
-    }
+      if (
+        entity.y + entity.vy * this.secondsPassed > 500 - entity.radius ||
+        entity.y + entity.vy * this.secondsPassed < entity.radius
+      ) {
+        entity.vy = -entity.vy;
+      }
+    });
   }
 
   detectCollisions() {
@@ -195,4 +162,4 @@ function circleIntersect(x1: number, y1: number, x2: number, y2: number) {
   return squareDistance;
 }
 
-export { Circle, GameWorld, circleIntersect };
+export { Circle, GameWorld, circleIntersect, GameEntity };
