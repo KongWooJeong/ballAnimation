@@ -56,11 +56,11 @@ class GameWorld {
   detectWallCollision(): void {
     this.gameEntities.forEach((entity) => {
       if (entity instanceof Circle) {
-        const isUpDownWallCollision: boolean =
+        const isLeftRightWallCollition: boolean =
           entity.x + entity.dx * this.secondsPassed >
             this.canvas.width - entity.radius ||
           entity.x + entity.dx * this.secondsPassed < entity.radius;
-        const isLeftRightWallCollition: boolean =
+        const isUpDownWallCollision: boolean =
           entity.y + entity.dy * this.secondsPassed >
             this.canvas.height - entity.radius ||
           entity.y + entity.dy * this.secondsPassed < entity.radius;

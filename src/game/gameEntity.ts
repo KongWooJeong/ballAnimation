@@ -23,7 +23,7 @@ abstract class GameEntity {
   }
 
   abstract draw(): void;
-  abstract update(deltaTime: number): void;
+  abstract update(secondsPassed: number): void;
 }
 
 class Circle extends GameEntity {
