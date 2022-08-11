@@ -2,23 +2,23 @@ abstract class GameEntity {
   context: CanvasRenderingContext2D;
   x: number;
   y: number;
-  vx: number;
-  vy: number;
+  dx: number;
+  dy: number;
   speed: number;
 
   constructor(
     context: CanvasRenderingContext2D,
     x: number,
     y: number,
-    vx: number,
-    vy: number,
+    dx: number,
+    dy: number,
     speed: number
   ) {
     this.context = context;
     this.x = x;
     this.y = y;
-    this.vx = vx;
-    this.vy = vy;
+    this.dx = dx;
+    this.dy = dy;
     this.speed = speed;
   }
 
@@ -33,12 +33,12 @@ class Circle extends GameEntity {
     context: CanvasRenderingContext2D,
     x: number,
     y: number,
-    vx: number,
-    vy: number,
+    dx: number,
+    dy: number,
     radius: number,
     speed: number
   ) {
-    super(context, x, y, vx, vy, speed);
+    super(context, x, y, dx, dy, speed);
     this.radius = radius;
   }
 
@@ -51,8 +51,8 @@ class Circle extends GameEntity {
   }
 
   update(secondsPassed: number) {
-    this.x += this.vx * secondsPassed;
-    this.y += this.vy * secondsPassed;
+    this.x += this.dx * secondsPassed;
+    this.y += this.dy * secondsPassed;
   }
 }
 
