@@ -19,11 +19,11 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".ts", ".js"],
+    extensions: [".ts"],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./index.html", // 템플릿 위치
+      template: "./index.html",
     }),
   ],
   devServer: {
