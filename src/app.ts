@@ -1,26 +1,65 @@
 import GameWorld from "./game/gameWorld";
 import { Circle } from "./game/gameEntity";
-
 import { getRandomIntInclusive } from "../utils/randomNumber";
 
 const $canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const context = $canvas.getContext("2d") as CanvasRenderingContext2D;
 
-const balls: Circle[] = [];
-const entityCount = getRandomIntInclusive(10, 20);
+const gameWorld: GameWorld = new GameWorld($canvas, context);
+const entityQuantity: number = getRandomIntInclusive(10, 20);
 
-const gameWorld = new GameWorld($canvas, context);
+function createRandomCircles(
+  quantity: number,
+  canvasWidth: number,
+  canvasHeight: number,
+  radiusRanges: number[],
+  angleRanges: number[],
+  speedRanges: number[]
+): Circle[] {
+  const circles: Circle[] = [];
 
-for (let i = 1; i <= entityCount; i++) {
-  const radius = getRandomIntInclusive(10, 20);
-  const xPoint = getRandomIntInclusive(0 + radius, 1000 - radius);
-  const yPoint = getRandomIntInclusive(0 + radius, 500 - radius);
-  const angle = getRandomIntInclusive(0, 360);
-  const speed = getRandomIntInclusive(200, 400);
-  const vx = Math.cos(angle) * speed;
-  const vy = Math.sin(angle) * speed;
+  const [minRadius, maxRadius] = radiusRanges;
+  const [minAngle, maxAngle] = angleRanges;
+  const [minSpeed, maxSpeed] = speedRanges;
 
-  balls.push(new Circle(context, xPoint, yPoint, vx, vy, radius, speed));
+  for (let i = 1; i <= quantity; i++) {
+    const radius: number = getRandomIntInclusive(minRadius, maxRadius);
+    const pointX: number = getRandomIntInclusive(
+      0 + radius,
+      canvasWidth - radius
+    );
+    const pointY: number = getRandomIntInclusive(
+      0 + radius,
+      canvasHeight - radius
+    );
+    const angle: number = getRandomIntInclusive(minAngle, maxAngle);
+    const speed: number = getRandomIntInclusive(minSpeed, maxSpeed);
+    const directionX: number = Math.cos(angle) * speed;
+    const directionY: number = Math.sin(angle) * speed;
+
+    const circle = new Circle(
+      context,
+      pointX,
+      pointY,
+      directionX,
+      directionY,
+      radius,
+      speed
+    );
+
+    circles.push(circle);
+  }
+
+  return circles;
 }
+
+const balls: Circle[] = createRandomCircles(
+  entityQuantity,
+  $canvas.width,
+  $canvas.height,
+  [10, 20],
+  [0, 360],
+  [200, 400]
+);
 
 gameWorld.init(balls);
