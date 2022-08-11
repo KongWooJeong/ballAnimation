@@ -72,15 +72,15 @@ class GameWorld {
   }
 
   createWorld(entities: Circle[]) {
-    this.gameEntities = entities;
+    this.gameEntities = [...entities];
   }
 
   gameLoop(timeStamp: number) {
     this.secondsPassed = (timeStamp - this.oldTimeStamp) / 1000;
     this.oldTimeStamp = timeStamp;
 
-    this.wallCollision();
-    this.detectCollisions();
+    this.detectWallCollision();
+    this.detectEntityCollisions();
 
     for (let i = 0; i < this.gameEntities.length; i++) {
       this.gameEntities[i].update(this.secondsPassed);
@@ -95,7 +95,7 @@ class GameWorld {
     window.requestAnimationFrame((timeStamp) => this.gameLoop(timeStamp));
   }
 
-  wallCollision() {
+  detectWallCollision() {
     this.gameEntities.forEach((entity) => {
       if (
         entity.x + entity.vx * this.secondsPassed > 1000 - entity.radius ||
@@ -113,42 +113,57 @@ class GameWorld {
     });
   }
 
-  detectCollisions() {
-    let entity1;
-    let entity2;
+  detectEntityCollisions() {
+    let collidedBaseEntity;
+    let collidedTargetEntity;
 
     for (let i = 0; i < this.gameEntities.length; i++) {
-      entity1 = this.gameEntities[i];
+      collidedBaseEntity = this.gameEntities[i];
 
       for (let j = i + 1; j < this.gameEntities.length; j++) {
-        entity2 = this.gameEntities[j];
+        collidedTargetEntity = this.gameEntities[j];
 
-        if (
-          circleIntersect(entity1.x, entity1.y, entity2.x, entity2.y) <=
-          (entity1.radius + entity2.radius) * (entity1.radius + entity2.radius)
-        ) {
-          const vCollision = {
-            x: entity2.x - entity1.x,
-            y: entity2.y - entity1.y,
+        if (this.circleIntersect(collidedBaseEntity, collidedTargetEntity)) {
+          const collisionVectorInfo = {
+            x: collidedTargetEntity.x - collidedBaseEntity.x,
+            y: collidedTargetEntity.y - collidedBaseEntity.y,
           };
 
-          const distance = Math.sqrt(
-            (entity2.x - entity1.x) * (entity2.x - entity1.x) +
-              (entity2.y - entity1.y) * (entity2.y - entity1.y)
+          const collsitionVectorDistance = Math.sqrt(
+            (collidedTargetEntity.x - collidedBaseEntity.x) *
+              (collidedTargetEntity.x - collidedBaseEntity.x) +
+              (collidedTargetEntity.y - collidedBaseEntity.y) *
+                (collidedTargetEntity.y - collidedBaseEntity.y)
           );
 
-          const vCollisionNorm = {
-            x: vCollision.x / distance,
-            y: vCollision.y / distance,
+          const collisionUnitVectorInfo = {
+            x: collisionVectorInfo.x / collsitionVectorDistance,
+            y: collisionVectorInfo.y / collsitionVectorDistance,
           };
 
-          entity1.vx = entity1.speed * -vCollisionNorm.x;
-          entity1.vy = entity1.speed * -vCollisionNorm.y;
-          entity2.vx = entity2.speed * vCollisionNorm.x;
-          entity2.vy = entity2.speed * vCollisionNorm.y;
+          collidedBaseEntity.vx =
+            collidedBaseEntity.speed * -collisionUnitVectorInfo.x;
+          collidedBaseEntity.vy =
+            collidedBaseEntity.speed * -collisionUnitVectorInfo.y;
+          collidedTargetEntity.vx =
+            collidedTargetEntity.speed * collisionUnitVectorInfo.x;
+          collidedTargetEntity.vy =
+            collidedTargetEntity.speed * collisionUnitVectorInfo.y;
         }
       }
     }
+  }
+
+  circleIntersect(baseCircle: Circle, targetCircle: Circle) {
+    const collisionDistance =
+      (baseCircle.x - targetCircle.x) * (baseCircle.x - targetCircle.x) +
+      (baseCircle.y - targetCircle.y) * (baseCircle.y - targetCircle.y);
+    const isCollision =
+      collisionDistance <=
+      (baseCircle.radius + targetCircle.radius) *
+        (baseCircle.radius + targetCircle.radius);
+
+    return isCollision;
   }
 
   clearCanvas() {
@@ -156,10 +171,4 @@ class GameWorld {
   }
 }
 
-function circleIntersect(x1: number, y1: number, x2: number, y2: number) {
-  const squareDistance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-
-  return squareDistance;
-}
-
-export { Circle, GameWorld, circleIntersect, GameEntity };
+export { Circle, GameWorld, GameEntity };
