@@ -12,6 +12,7 @@ interface CircleInfo {
   dy: number;
   radius: number;
   speed: number;
+  fillStyle: string;
 }
 
 describe("Circle Entity", () => {
@@ -31,6 +32,7 @@ describe("Circle Entity", () => {
       dy: 100,
       radius: 10,
       speed: 200,
+      fillStyle: "#0099b0",
     };
     circle = new Circle(
       context,
@@ -39,7 +41,8 @@ describe("Circle Entity", () => {
       circleInfo.dx,
       circleInfo.dy,
       circleInfo.radius,
-      circleInfo.speed
+      circleInfo.speed,
+      circleInfo.fillStyle
     );
   });
 

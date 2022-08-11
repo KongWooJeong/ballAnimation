@@ -13,6 +13,7 @@ interface CircleInfo {
   dy: number;
   radius: number;
   speed: number;
+  fillStyle: string;
 }
 
 describe("GameWorld test", () => {
@@ -40,6 +41,7 @@ describe("GameWorld test", () => {
       dy: 100,
       radius: 10,
       speed: 200,
+      fillStyle: "#0099b0",
     };
     targetCircleInfo = {
       x: 20,
@@ -48,6 +50,7 @@ describe("GameWorld test", () => {
       dy: 10,
       radius: 10,
       speed: 200,
+      fillStyle: "#0099b0",
     };
     baseCircle = new Circle(
       context,
@@ -56,7 +59,8 @@ describe("GameWorld test", () => {
       baseCircleInfo.dx,
       baseCircleInfo.dy,
       baseCircleInfo.radius,
-      baseCircleInfo.speed
+      baseCircleInfo.speed,
+      baseCircleInfo.fillStyle
     );
     targetCircle = new Circle(
       context,
@@ -65,7 +69,8 @@ describe("GameWorld test", () => {
       targetCircleInfo.dx,
       targetCircleInfo.dy,
       targetCircleInfo.radius,
-      targetCircleInfo.speed
+      targetCircleInfo.speed,
+      targetCircleInfo.fillStyle
     );
   });
 
@@ -94,6 +99,7 @@ describe("GameWorld test", () => {
       dy: 100,
       radius: 10,
       speed: 200,
+      fillStyle: "#0099b0",
     };
 
     baseCircle = new Circle(
@@ -103,7 +109,8 @@ describe("GameWorld test", () => {
       baseCircleInfo.dx,
       baseCircleInfo.dy,
       baseCircleInfo.radius,
-      baseCircleInfo.speed
+      baseCircleInfo.speed,
+      baseCircleInfo.fillStyle
     );
 
     const mockresolveWallCollision = jest.fn();
@@ -148,11 +155,11 @@ describe("GameWorld test", () => {
 
     gameWorld.resolveWallCollision(baseCircle, true, false);
 
-    expect(baseCircle.dx).toBe(-baseCircleInfo.dx);
+    expect(baseCircle.dy).toBe(-baseCircleInfo.dy);
 
     gameWorld.resolveWallCollision(baseCircle, false, true);
 
-    expect(baseCircle.dy).toBe(-baseCircleInfo.dy);
+    expect(baseCircle.dx).toBe(-baseCircleInfo.dx);
   });
 
   test("check resolveCicleAndCircleCollision method", () => {
