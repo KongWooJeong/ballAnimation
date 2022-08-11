@@ -1,7 +1,8 @@
-function getRandomIntInclusive(min: number, max: number) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1) + min);
+function getRandomIntInclusive(min: number, max: number): number {
+  const minNumber = Math.ceil(min);
+  const maxNumber = Math.floor(max);
+
+  return Math.floor(Math.random() * (maxNumber - minNumber + 1) + minNumber);
 }
 
 export { getRandomIntInclusive };
