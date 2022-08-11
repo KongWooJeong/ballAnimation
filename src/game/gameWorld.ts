@@ -114,11 +114,11 @@ class GameWorld {
     isLeftRightWallCollition: boolean
   ): void {
     if (isUpDownWallCollision) {
-      entity.dx = -entity.dx;
+      entity.dy = -entity.dy;
     }
 
     if (isLeftRightWallCollition) {
-      entity.dy = -entity.dy;
+      entity.dx = -entity.dx;
     }
   }
 
