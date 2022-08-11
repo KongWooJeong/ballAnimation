@@ -9,18 +9,18 @@ const gameWorld = new GameWorld(ctx);
 
 const entityCount = getRandomIntInclusive(10, 20);
 
-const angle = 113;
-const speed = 200;
-
-const x = Math.cos(angle) * speed;
-const y = Math.sin(angle) * speed;
-
 for (let i = 1; i <= entityCount; i++) {
   const radius = getRandomIntInclusive(10, 20);
   const xPoint = getRandomIntInclusive(1 + radius, 1000 - radius);
   const yPoint = getRandomIntInclusive(1 + radius, 500 - radius);
+  const angle = getRandomIntInclusive(0, 360);
+  const speed = getRandomIntInclusive(200, 400);
+  const vx = Math.cos(angle) * speed;
+  const vy = Math.sin(angle) * speed;
 
-  circleEntities.push(new Circle(ctx, xPoint, yPoint, x, y, radius, 113));
+  circleEntities.push(
+    new Circle(ctx, xPoint, yPoint, vx, vy, radius, 113, speed)
+  );
 }
 
 gameWorld.createWorld(circleEntities);
